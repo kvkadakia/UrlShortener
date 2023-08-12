@@ -1,5 +1,4 @@
 # Url Shortener
-
 An internal service for shortening URLs using golang and mongo db that anybody can use
 
 ## API Reference
@@ -51,9 +50,9 @@ When the user opens a short url in browser this endpoint redirects the request t
 
 
 ## Installation
-
+- Please make use of Safari browser or any other browser apart from Google Chrome since chrome caches some of the requests and does not invoke the application which leads to incorrect access counts
 - Make sure you have mongo db & golang installed on your local machine
-- One can make use of GoLand IDE provided by intellij in order to run this project.
+- One can make use of GoLand IDE provided by intellij in order to run this project
 - MAC users can follow the below installation steps, in case of other OS one can follow similar steps
 - Mongo installation:
 ```
