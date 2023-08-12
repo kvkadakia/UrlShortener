@@ -1,3 +1,6 @@
+# Url Shortener
+
+An internal service for shortening URLs using golang and mongo db that anybody can use
 
 ## API Reference
 
@@ -17,6 +20,20 @@ Request body:
     "user_id" : "<put user id here>"
 }
 ```
+Response in case where short url does not exist:
+```json
+{
+    "shortUrl": "<short url>"
+}
+```
+
+Response in case where short url exists:
+```json
+{
+    "info": "Short url already exists: <short url> | totalAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
+}
+```
+
 
 #### Browse a Short URL
 When the user opens a short url in browser this endpoint redirects the request to the corresponding short url
@@ -28,6 +45,8 @@ When the user opens a short url in browser this endpoint redirects the request t
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `code`      | `string` | **Required**. short url code of a given long url|
+
+
 
 
 
@@ -47,3 +66,26 @@ brew services start mongodb-community
  ```
  brew install golang
  ```
+
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/kvkadakia/UrlShortener.git
+```
+
+Go to the project directory
+
+```bash
+  cd UrlShortener
+```
+
+
+Start the server
+
+```bash
+  go run main.go
+```
+

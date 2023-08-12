@@ -72,11 +72,11 @@ func Shorten(c *gin.Context) {
 		return
 	}
 
-	var newUrl = baseUrl + shortUrlCode
+	var shortUrl = baseUrl + shortUrlCode
 	newDoc := &UrlDoc{
 		UrlCode:   shortUrlCode,
 		LongUrl:   creationRequest.LongUrl,
-		ShortUrl:  newUrl,
+		ShortUrl:  shortUrl,
 		CreatedAt: time.Now(),
 	}
 	_, err := urlCollection.InsertOne(ctx, newDoc)
@@ -84,7 +84,7 @@ func Shorten(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"newUrl": newUrl})
+	c.JSON(http.StatusCreated, gin.H{"shortUrl": shortUrl})
 }
 
 func Redirect(c *gin.Context) {
@@ -130,7 +130,7 @@ func calculateAccessDetails(shortUrlCode string, c *gin.Context) {
 	countPastWeekAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, pastWeekAccessLogsFilter)
 	countPastTwentyFourHoursAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, pastTwentyFourHoursAccessLogsFilter)
 	countAllTimeAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, allTimeAccessLogsFilter)
-	c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Short url already exists: %s | totalAccessCount : %v, pastTwentyFourHoursAccessCount : %v, pastWeekAccessCount : %v", baseUrl+shortUrlCode, countAllTimeAccessLogs, countPastTwentyFourHoursAccessLogs, countPastWeekAccessLogs)})
+	c.JSON(http.StatusOK, gin.H{"info": fmt.Sprintf("Short url already exists: %s | totalAccessCount : %v, pastTwentyFourHoursAccessCount : %v, pastWeekAccessCount : %v", baseUrl+shortUrlCode, countAllTimeAccessLogs, countPastTwentyFourHoursAccessLogs, countPastWeekAccessLogs)})
 }
 
 func updateUrlAccessDetails(code string) {
