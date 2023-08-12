@@ -7,12 +7,10 @@ An internal service for shortening URLs using golang and mongo db that anybody c
 
 This endpoint needs long url and user id in the request body, user id is required in order to generate a unique short url for each user
 
-#### Endpoint:
 ```bash
 POST /shorten
 ```
 
-#### Request body:
 ```json
 { 
     "long_url": "<put long url here>" ,
@@ -20,7 +18,6 @@ POST /shorten
 }
 ```
 
-#### Response:
 Response in case where short url does not exist:
 ```json
 {
