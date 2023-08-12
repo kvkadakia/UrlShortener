@@ -70,19 +70,19 @@ brew services start mongodb-community
 Clone the project
 
 ```bash
-  git clone https://github.com/kvkadakia/UrlShortener.git
+git clone https://github.com/kvkadakia/UrlShortener.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd UrlShortener
+cd UrlShortener
 ```
 
 
 Start the server
 
 ```bash
-  go run main.go
+go run main.go
 ```
 
