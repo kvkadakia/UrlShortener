@@ -20,7 +20,7 @@ POST /shorten
 }
 ```
 
-#### Response body:
+#### Response:
 Response in case where short url does not exist:
 ```json
 {
