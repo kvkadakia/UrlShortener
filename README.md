@@ -39,7 +39,7 @@ curl --location 'http://localhost:8080/shorten' \
 403 Response in case where short url already exists:
 ```json
 {
-    "Error": "Short url already exists: <short url>"
+    "error": "Short url already exists: <short url>"
 }
 ```
 
@@ -102,7 +102,7 @@ curl --location 'http://localhost:8080/access-details/GMH9monD'
 Response
 ```json
 {
-    "Access details": "AllTimeAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
+    "accessDetails": "AllTimeAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
 }
 ```
 
