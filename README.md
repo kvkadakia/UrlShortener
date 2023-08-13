@@ -11,6 +11,14 @@ A service for shortening URLs using golang and mongo db
 POST /shorten
 ```
 
+Request body
+```json
+{ 
+    "long_url": "<put long url here>" ,
+    "user_id" : "<put user id here>"
+}
+```
+
 Sample curl request
 ```bash
 curl --location 'http://localhost:8080/shorten' \
@@ -19,13 +27,6 @@ curl --location 'http://localhost:8080/shorten' \
     "long_url" : "https://www.google.com",
     "user_id" : "asdasd"
 }'
-```
-Request body
-```json
-{ 
-    "long_url": "<put long url here>" ,
-    "user_id" : "<put user id here>"
-}
 ```
 
 201 Response in case where short url gets created:
