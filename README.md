@@ -33,7 +33,7 @@ Response in case where short url exists:
 ```
 
 #### Browse a Short URL
-When the user opens a short url in browser this endpoint redirects the request to the corresponding short url
+When the user opens a short url in browser this endpoint redirects the request to the corresponding long url
 
 ```bash
 GET /:shortUrlCode
