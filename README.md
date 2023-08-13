@@ -5,7 +5,7 @@ A service for shortening URLs using golang and mongo db
 
 #### Shorten a Long URL
 - This endpoint needs long url and user id in the request body, user id is taken as input to generate a unique short url for each user
-- This implementation generates the same short url for a given combination of short url and userId
+- This implementation generates the same short url for a given combination of long url and userId
 
 ```bash
 POST /shorten
