@@ -17,5 +17,8 @@ func main() {
 	r.GET("/:code", func(c *gin.Context) {
 		shortener.Redirect(c)
 	})
+	r.DELETE("/:code", func(c *gin.Context) {
+		shortener.Delete(c)
+	})
 	r.Run(":8080")
 }

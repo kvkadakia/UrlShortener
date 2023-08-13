@@ -1,11 +1,11 @@
 # Url Shortener
-An internal service for shortening URLs using golang and mongo db that anybody can use
+A service for shortening URLs using golang and mongo db 
 
 ## API Reference
 
 #### Shorten a Long URL
-
-This endpoint needs long url and user id in the request body, user id is required in order to generate a unique short url for each user
+- This endpoint needs long url and user id in the request body, user id is taken as input to generate a unique short url for each user
+- This implementation generates the same long url for a given short url 
 
 ```bash
 POST /shorten
@@ -44,6 +44,17 @@ GET /:code
 | `code`      | `string` | **Required**. short url code of a given long url|
 
 
+#### Browse a Short URL
+User can delete a short url 
+Upon deletion the short url access logs are also deleted
+
+```bash
+DELETE /:code
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `code`      | `string` | **Required**. short url code of a given long url|
 
 
 

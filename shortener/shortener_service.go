@@ -106,6 +106,18 @@ func Redirect(c *gin.Context) {
 	c.Redirect(http.StatusPermanentRedirect, longUrl)
 }
 
+func Delete(c *gin.Context) {
+	code := c.Param("code")
+	_, deleteOneQueryErr := urlCollection.DeleteOne(ctx, bson.D{{"urlCode", code}})
+	if deleteOneQueryErr != nil {
+		return
+	}
+	_, deleteManyQueryErr := accessLogsCollection.DeleteMany(ctx, bson.D{{"urlCode", code}})
+	if deleteManyQueryErr != nil {
+		return
+	}
+}
+
 func calculateAccessDetails(shortUrlCode string, c *gin.Context) {
 	currTime := time.Now()
 	pastTwentyFourHoursTime := currTime.Add(time.Duration(-24) * time.Hour)
