@@ -49,6 +49,11 @@ When the user opens a short url in browser this endpoint redirects the request t
 GET /:shortUrlCode
 ```
 
+Sample curl
+```bash
+curl --location 'http://localhost:8080/GMH9monD'
+```
+
 | Parameter      | Type     | Description                       |
 |:---------------| :------- | :-------------------------------- |
 | `shortUrlCode` | `string` | **Required**. short url code of a given long url|
@@ -60,6 +65,11 @@ GET /:shortUrlCode
 
 ```bash
 DELETE /:shortUrlCode
+```
+
+Sample curl
+```bash
+curl --location --request DELETE 'http://localhost:8080/GMH9monD'
 ```
 
 | Parameter   | Type     | Description                       |
@@ -82,6 +92,11 @@ GET access-details/:shortUrlCode
 | Parameter   | Type     | Description                       |
 |:------------| :------- | :-------------------------------- |
 | `shortUrlCode` | `string` | **Required**. short url code of a given long url|
+
+Sample curl
+```bash
+curl --location 'http://localhost:8080/access-details/GMH9monD'
+```
 
 Response
 ```json
