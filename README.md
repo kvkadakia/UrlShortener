@@ -11,6 +11,16 @@ A service for shortening URLs using golang and mongo db
 POST /shorten
 ```
 
+Sample curl request
+```bash
+curl --location 'http://localhost:8080/shorten' \
+--header 'Content-Type: application/json' \
+--data '{
+    "long_url" : "https://www.google.com",
+    "user_id" : "asdasd"
+}'
+```
+Request body
 ```json
 { 
     "long_url": "<put long url here>" ,
@@ -18,17 +28,17 @@ POST /shorten
 }
 ```
 
-Response in case where short url does not exist:
+201 Response in case where short url gets created:
 ```json
 {
     "shortUrl": "<short url>"
 }
 ```
 
-Response in case where short url exists:
+403 Response in case where short url already exists:
 ```json
 {
-    "Response": "Short url already exists: <short url>"
+    "Error": "Short url already exists: <short url>"
 }
 ```
 
