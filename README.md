@@ -28,7 +28,7 @@ Response in case where short url does not exist:
 Response in case where short url exists:
 ```json
 {
-    "info": "Short url already exists: <short url>"
+    "Response": "Short url already exists: <short url>"
 }
 ```
 
