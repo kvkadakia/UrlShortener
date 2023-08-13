@@ -121,3 +121,5 @@ Start the server
 go run main.go
 ```
 
+## Running Tests Locally
+Test are located under respective packages
