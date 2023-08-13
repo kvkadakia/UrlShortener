@@ -108,9 +108,7 @@ Response
 
 
 ## Installation
-- Please make use of Safari browser or any other browser apart from Google Chrome since chrome caches some of the requests and does not invoke the application which leads to incorrect access counts
 - Make sure you have mongo db & golang installed on your local machine
-- One can make use of GoLand IDE provided by intellij in order to run this project
 - MAC users can follow the below installation steps, in case of other OS one can follow similar steps 
 
 Mongo installation:
@@ -127,8 +125,9 @@ Golang installation:
 
 
 ## Run Locally
-
-Clone the project
+- Please make use of Safari browser or any other browser apart from Google Chrome since chrome caches some of the requests and does not invoke the application which leads to incorrect access counts
+- Clone the project
+- One can make use of GoLand IDE provided by intellij in order to run this project
 
 ```bash
 git clone https://github.com/kvkadakia/UrlShortener.git
