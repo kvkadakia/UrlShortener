@@ -44,7 +44,7 @@ GET /:code
 | `code`      | `string` | **Required**. short url code of a given long url|
 
 
-#### Browse a Short URL
+#### Delete a Short URL
 User can delete a short url 
 Upon deletion the short url access logs are also deleted
 
