@@ -45,8 +45,8 @@ GET /:shortUrlCode
 
 
 #### Delete a Short URL
-User can delete a short url 
-Upon deletion the short url access logs are also deleted
+- User can delete a short url 
+- Upon deletion the short url access logs are also deleted
 
 ```bash
 DELETE /:shortUrlCode
@@ -76,7 +76,7 @@ GET access-details/:shortUrlCode
 Response
 ```json
 {
-    "Access details": "totalAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
+    "Access details": "AllTimeAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
 }
 ```
 
