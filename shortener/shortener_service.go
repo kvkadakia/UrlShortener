@@ -32,7 +32,7 @@ var baseUrl = "http://localhost:8080/"
 var urlCollection *mongo.Collection
 var accessLogsCollection *mongo.Collection
 
-func init() {
+func InitializeDb() {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/")
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
@@ -73,9 +73,14 @@ func Shorten(c *gin.Context) {
 	}
 
 	var shortUrl = baseUrl + shortUrlCode
+	SaveUrlMapping(shortUrlCode, creationRequest.LongUrl, shortUrl, c)
+	c.JSON(http.StatusCreated, gin.H{"shortUrl": shortUrl})
+}
+
+func SaveUrlMapping(shortUrlCode string, longUrl string, shortUrl string, c *gin.Context) {
 	newDoc := &UrlDoc{
 		ShortUrlCode: shortUrlCode,
-		LongUrl:      creationRequest.LongUrl,
+		LongUrl:      longUrl,
 		ShortUrl:     shortUrl,
 		CreatedAt:    time.Now(),
 	}
@@ -84,39 +89,48 @@ func Shorten(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"shortUrl": shortUrl})
 }
 
 func Redirect(c *gin.Context) {
 	code := c.Param("shortUrlCode")
-	var result bson.M
-	queryErr := urlCollection.FindOne(ctx, bson.D{{"shortUrlCode", code}}).Decode(&result)
-	if queryErr != nil {
-		if queryErr == mongo.ErrNoDocuments {
-			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No URL found with short url code: %s", code)})
-			return
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": queryErr.Error()})
-			return
-		}
-	}
+	result := RetrieveInitialUrl(c, code)
 	log.Print(result["longUrl"])
 	updateUrlAccessDetails(code)
 	var longUrl = fmt.Sprint(result["longUrl"])
 	c.Redirect(http.StatusPermanentRedirect, longUrl)
 }
 
+func RetrieveInitialUrl(c *gin.Context, code string) bson.M {
+	var result bson.M
+	queryErr := urlCollection.FindOne(ctx, bson.D{{"shortUrlCode", code}}).Decode(&result)
+	if queryErr != nil {
+		if queryErr == mongo.ErrNoDocuments {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No URL found with short url code: %s", code)})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": queryErr.Error()})
+		}
+	}
+	return result
+}
+
 func Delete(c *gin.Context) {
 	code := c.Param("shortUrlCode")
-	_, deleteOneQueryErr := urlCollection.DeleteOne(ctx, bson.D{{"shortUrlCode", code}})
-	if deleteOneQueryErr != nil {
-		return
-	}
-	_, deleteManyQueryErr := accessLogsCollection.DeleteMany(ctx, bson.D{{"shortUrlCode", code}})
-	if deleteManyQueryErr != nil {
+	if DeleteShortUrl(code) {
 		return
 	}
 	c.JSON(http.StatusOK, "Successfully deleted short url")
+}
+
+func DeleteShortUrl(code string) bool {
+	_, deleteOneQueryErr := urlCollection.DeleteOne(ctx, bson.D{{"shortUrlCode", code}})
+	if deleteOneQueryErr != nil {
+		return true
+	}
+	_, deleteManyQueryErr := accessLogsCollection.DeleteMany(ctx, bson.D{{"shortUrlCode", code}})
+	if deleteManyQueryErr != nil {
+		return true
+	}
+	return false
 }
 
 func FindShortUrlAccessDetails(c *gin.Context) {

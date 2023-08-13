@@ -8,6 +8,8 @@ import (
 
 func main() {
 	r := gin.Default()
+	shortener.InitializeDb()
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusAccepted, gin.H{"message": "Welcome to url generator!"})
 	})
