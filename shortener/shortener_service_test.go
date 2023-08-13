@@ -12,7 +12,7 @@ func init() {
 	InitializeDb()
 }
 
-func TestInsertionRetrievalAndDeletion(t *testing.T) {
+func TestUrlInsertionRetrievalAndDeletion(t *testing.T) {
 	initialLink := "https://www.google.com"
 	shortURL := "http://localhost:8080/GMH9monD"
 	gin.SetMode(gin.TestMode)

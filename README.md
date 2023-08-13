@@ -148,3 +148,7 @@ go run main.go
 
 ## Running Tests Locally
 Test are located under respective packages
+```bash
+go test UrlShortener/generator -run TestShortLinkGenerator
+go test UrlShortener/shortener -run TestUrlInsertionRetrievalAndDeletion
+```
