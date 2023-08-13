@@ -68,7 +68,7 @@ func Shorten(c *gin.Context) {
 		}
 	}
 	if len(result) > 0 {
-		c.JSON(http.StatusOK, gin.H{"Response": fmt.Sprintf("Short url already exists: %s", baseUrl+shortUrlCode)})
+		c.JSON(http.StatusBadRequest, gin.H{"Response": fmt.Sprintf("Short url already exists: %s", baseUrl+shortUrlCode)})
 		return
 	}
 
