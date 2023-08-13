@@ -14,10 +14,13 @@ func main() {
 	r.POST("/shorten", func(c *gin.Context) {
 		shortener.Shorten(c)
 	})
-	r.GET("/:code", func(c *gin.Context) {
+	r.GET("/:shortUrlCode", func(c *gin.Context) {
 		shortener.Redirect(c)
 	})
-	r.DELETE("/:code", func(c *gin.Context) {
+	r.GET("access-details/:shortUrlCode", func(c *gin.Context) {
+		shortener.FindShortUrlAccessDetails(c)
+	})
+	r.DELETE("/:shortUrlCode", func(c *gin.Context) {
 		shortener.Delete(c)
 	})
 	r.Run(":8080")

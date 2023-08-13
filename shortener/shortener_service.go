@@ -20,11 +20,11 @@ type UrlCreationRequest struct {
 }
 
 type UrlDoc struct {
-	UrlCode   string    `bson:"urlCode"`
-	LongUrl   string    `bson:"longUrl"`
-	ShortUrl  string    `bson:"shortUrl"`
-	CreatedAt time.Time `bson:"createdAt"`
-	ExpiresAt time.Time `bson:"expiresAt"`
+	ShortUrlCode string    `bson:"shortUrlCode"`
+	LongUrl      string    `bson:"longUrl"`
+	ShortUrl     string    `bson:"shortUrl"`
+	CreatedAt    time.Time `bson:"createdAt"`
+	ExpiresAt    time.Time `bson:"expiresAt"`
 }
 
 var ctx = context.TODO()
@@ -61,23 +61,23 @@ func Shorten(c *gin.Context) {
 	shortUrlCode := generator.GenerateShortLink(creationRequest.LongUrl, creationRequest.UserId)
 
 	var result bson.M
-	queryErr := urlCollection.FindOne(ctx, bson.D{{"urlCode", shortUrlCode}}).Decode(&result)
+	queryErr := urlCollection.FindOne(ctx, bson.D{{"shortUrlCode", shortUrlCode}}).Decode(&result)
 	if queryErr != nil {
 		if queryErr != mongo.ErrNoDocuments {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": queryErr.Error()})
 		}
 	}
 	if len(result) > 0 {
-		calculateAccessDetails(shortUrlCode, c)
+		c.JSON(http.StatusOK, gin.H{"Response": fmt.Sprintf("Short url already exists: %s", baseUrl+shortUrlCode)})
 		return
 	}
 
 	var shortUrl = baseUrl + shortUrlCode
 	newDoc := &UrlDoc{
-		UrlCode:   shortUrlCode,
-		LongUrl:   creationRequest.LongUrl,
-		ShortUrl:  shortUrl,
-		CreatedAt: time.Now(),
+		ShortUrlCode: shortUrlCode,
+		LongUrl:      creationRequest.LongUrl,
+		ShortUrl:     shortUrl,
+		CreatedAt:    time.Now(),
 	}
 	_, err := urlCollection.InsertOne(ctx, newDoc)
 	if err != nil {
@@ -88,12 +88,12 @@ func Shorten(c *gin.Context) {
 }
 
 func Redirect(c *gin.Context) {
-	code := c.Param("code")
+	code := c.Param("shortUrlCode")
 	var result bson.M
-	queryErr := urlCollection.FindOne(ctx, bson.D{{"urlCode", code}}).Decode(&result)
+	queryErr := urlCollection.FindOne(ctx, bson.D{{"shortUrlCode", code}}).Decode(&result)
 	if queryErr != nil {
 		if queryErr == mongo.ErrNoDocuments {
-			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No URL with code: %s", code)})
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No URL found with short url code: %s", code)})
 			return
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": queryErr.Error()})
@@ -107,15 +107,21 @@ func Redirect(c *gin.Context) {
 }
 
 func Delete(c *gin.Context) {
-	code := c.Param("code")
-	_, deleteOneQueryErr := urlCollection.DeleteOne(ctx, bson.D{{"urlCode", code}})
+	code := c.Param("shortUrlCode")
+	_, deleteOneQueryErr := urlCollection.DeleteOne(ctx, bson.D{{"shortUrlCode", code}})
 	if deleteOneQueryErr != nil {
 		return
 	}
-	_, deleteManyQueryErr := accessLogsCollection.DeleteMany(ctx, bson.D{{"urlCode", code}})
+	_, deleteManyQueryErr := accessLogsCollection.DeleteMany(ctx, bson.D{{"shortUrlCode", code}})
 	if deleteManyQueryErr != nil {
 		return
 	}
+	c.JSON(http.StatusOK, "Successfully deleted short url")
+}
+
+func FindShortUrlAccessDetails(c *gin.Context) {
+	code := c.Param("shortUrlCode")
+	calculateAccessDetails(code, c)
 }
 
 func calculateAccessDetails(shortUrlCode string, c *gin.Context) {
@@ -127,26 +133,26 @@ func calculateAccessDetails(shortUrlCode string, c *gin.Context) {
 			"$gt": pastWeekTime,
 			"$lt": currTime,
 		},
-		"urlCode": shortUrlCode,
+		"shortUrlCode": shortUrlCode,
 	}
 	pastTwentyFourHoursAccessLogsFilter := bson.M{
 		"accessedAt": bson.M{
 			"$gt": pastTwentyFourHoursTime,
 			"$lt": currTime,
 		},
-		"urlCode": shortUrlCode,
+		"shortUrlCode": shortUrlCode,
 	}
 	allTimeAccessLogsFilter := bson.M{
-		"urlCode": shortUrlCode,
+		"shortUrlCode": shortUrlCode,
 	}
 	countPastWeekAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, pastWeekAccessLogsFilter)
 	countPastTwentyFourHoursAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, pastTwentyFourHoursAccessLogsFilter)
 	countAllTimeAccessLogs, _ := accessLogsCollection.CountDocuments(ctx, allTimeAccessLogsFilter)
-	c.JSON(http.StatusOK, gin.H{"info": fmt.Sprintf("Short url already exists: %s | totalAccessCount : %v, pastTwentyFourHoursAccessCount : %v, pastWeekAccessCount : %v", baseUrl+shortUrlCode, countAllTimeAccessLogs, countPastTwentyFourHoursAccessLogs, countPastWeekAccessLogs)})
+	c.JSON(http.StatusOK, gin.H{"accessDetails": fmt.Sprintf("AllTimeAccessCount : %v, PastTwentyFourHoursAccessCount : %v, PastWeekAccessCount : %v", countAllTimeAccessLogs, countPastTwentyFourHoursAccessLogs, countPastWeekAccessLogs)})
 }
 
 func updateUrlAccessDetails(code string) {
-	data := bson.D{{"urlCode", code}, {"accessedAt", time.Now()}}
+	data := bson.D{{"shortUrlCode", code}, {"accessedAt", time.Now()}}
 	_, err := accessLogsCollection.InsertOne(ctx, data)
 	if err != nil {
 		return

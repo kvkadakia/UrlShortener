@@ -28,7 +28,7 @@ Response in case where short url does not exist:
 Response in case where short url exists:
 ```json
 {
-    "info": "Short url already exists: <short url> | totalAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
+    "info": "Short url already exists: <short url>"
 }
 ```
 
@@ -36,12 +36,12 @@ Response in case where short url exists:
 When the user opens a short url in browser this endpoint redirects the request to the corresponding short url
 
 ```bash
-GET /:code
+GET /:shortUrlCode
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `code`      | `string` | **Required**. short url code of a given long url|
+| Parameter      | Type     | Description                       |
+|:---------------| :------- | :-------------------------------- |
+| `shortUrlCode` | `string` | **Required**. short url code of a given long url|
 
 
 #### Delete a Short URL
@@ -49,28 +49,52 @@ User can delete a short url
 Upon deletion the short url access logs are also deleted
 
 ```bash
-DELETE /:code
+DELETE /:shortUrlCode
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `code`      | `string` | **Required**. short url code of a given long url|
+| Parameter   | Type     | Description                       |
+|:------------| :------- | :-------------------------------- |
+| `shortUrlCode` | `string` | **Required**. short url code of a given long url|
 
+#### Access Details of a Short URL
+- Access counts are calculated based on the logs stored in the database
+- Timestamp is updated in the database everytime a request for redirect comes
+- When a request to shorten an existing short url is made the access count for that short url is returned in the response
+- Access count has 3 variables that represent 3 things:
+    - All time count
+    - Count in last 24 hours
+    - Count in last 7 days
+
+```bash
+GET access-details/:shortUrlCode
+```
+
+| Parameter   | Type     | Description                       |
+|:------------| :------- | :-------------------------------- |
+| `shortUrlCode` | `string` | **Required**. short url code of a given long url|
+
+Response
+```json
+{
+    "Access details": "totalAccessCount : <some value>, pastTwentyFourHoursAccessCount : <some value>, pastWeekAccessCount : <some value>"
+}
+```
 
 
 ## Installation
 - Please make use of Safari browser or any other browser apart from Google Chrome since chrome caches some of the requests and does not invoke the application which leads to incorrect access counts
 - Make sure you have mongo db & golang installed on your local machine
 - One can make use of GoLand IDE provided by intellij in order to run this project
-- MAC users can follow the below installation steps, in case of other OS one can follow similar steps
-- Mongo installation:
+- MAC users can follow the below installation steps, in case of other OS one can follow similar steps 
+
+Mongo installation:
 ```
 brew tap mongodb/brew
 brew install mongodb-community
 brew services start mongodb-community
 ```
 
--  Golang installation:
+Golang installation:
  ```
  brew install golang
  ```
